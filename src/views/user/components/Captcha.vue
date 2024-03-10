@@ -3,20 +3,16 @@
 </template>
 
 <script>
-import { apiVerifyCaptcha } from '@/api/user/user';
+import { apiVerifyCaptcha } from '@/api/user';
 export default {
 	props: {
-		btnId: {
-			type: String,
-			default: 'captcha-button',
-		},
 		getCode: {
 			type: Function,
 			default: () => {},
 		},
-		isCount: {
-			type: Boolean,
-			default: true,
+		activeName: {
+			type: String,
+			default: '',
 		},
 		login: {
 			type: Function,
@@ -30,7 +26,7 @@ export default {
 		};
 	},
 	mounted() {
-		this.captchaButton = document.getElementById(this.btnId);
+		this.captchaButton = document.getElementById('captcha-button');
 
 		window.initAliyunCaptcha({
 			SceneId: '1q6cx5mm', // 场景ID。根据步骤二新建验证场景后，您可以在验证码场景列表，获取该场景的场景ID
@@ -85,7 +81,7 @@ export default {
 		},
 		// 验证通过后调用
 		onBizResultCallback() {
-			if (this.isCount) {
+			if (this.activeName == '1') {
 				this.$emit('login');
 				return;
 			}

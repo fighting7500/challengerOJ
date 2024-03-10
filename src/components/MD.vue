@@ -30,7 +30,7 @@ watch(
 <template>
   <div class="question">
     <v-md-preview :text="level.content"></v-md-preview>
-    <a-divider />
+    <el-divider />
   </div>
 </template>
 

@@ -7,3 +7,6 @@ a {
   text-decoration: none;
   color: inherit;
 }
+:root {
+  --el-component-size: 42px !important;
+}

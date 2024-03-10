@@ -1,8 +1,7 @@
 // auth.js
 import Cookies from 'js-cookie';
 
-const Token = 'Mysql-Token';
-
+let Token = 'code_challenger_token'
 // 获取token
 export function getToken() {
     return Cookies.get(Token)

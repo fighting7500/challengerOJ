@@ -2,25 +2,12 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter()
-const current = ref([''])
-const items = ref([
-	{
-		key: 'play',
-		label: '闯关'
-	},
-	{
-		key: 'app',
-		label: '题库'
-	},
-	{
-		key: 'playground',
-		label: '广场'
-	}
-])
+const activeIndex = ref('')
 
-const handle = ({ key }) => {
+const handleSelect = (key, keyPath) => {
 	// 跳转到对应的页面
-	router.push(key)
+	// router.push(key)
+	console.log(key, keyPath);
 }
 
 </script>
@@ -29,17 +16,26 @@ const handle = ({ key }) => {
 	<div class="head">
 		<div class="logo">
 			<router-link to="/">
-				<img src="@/assets/logo.png" alt="MySQL自学网站" title="MySQL自学网站" />
+				<img src="@/assets/logo.png" alt="编程挑战者" title="编程挑战者" />
 			</router-link>
 		</div>
-		<!-- <a-menu v-model:selectedKeys="current" mode="horizontal" :items="items" @click="handle"/> -->
+		<el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+			<el-menu-item index="1">学习</el-menu-item>
+			<el-menu-item index="2">闯关</el-menu-item>
+			<el-menu-item index="3">题库</el-menu-item>
+			<el-menu-item index="4">讨论</el-menu-item>
+		</el-menu>
 		<div class="right">
-			<!-- <SearchOutlined /> -->
-			<router-link to="/login">登录</router-link>
-			<a-button type="primary" shape="round" danger>注册</a-button>
+			<el-input>
+				<template #prefix>
+					<i class="iconfont icon-sousuo"></i>
+				</template>
+			</el-input>
+			<el-button text type="primary" shape="round" danger @click="() => router.push('/login')">登录</el-button>
+			<el-button type="primary" shape="round" danger @click="() => router.push('/login/register')">注册</el-button>
 		</div>
 	</div>
-	<a-divider />
+	<el-divider style="margin: 0;"/>
 </template>
 
 <style lang="scss" scoped>
@@ -50,25 +46,28 @@ const handle = ({ key }) => {
 	align-items: center;
 	.logo {
 		width: 150px;
+
 		img {
 			width: 100%;
 		}
 	}
-	.ant-menu-horizontal {
-		border-bottom: none;
+	.el-menu-demo{
+		margin-left: 30px;
+		flex: 1;
 	}
 	.right {
-		flex: 1;
 		display: flex;
-		justify-content: flex-end;
 		align-items: center;
 		a {
 			line-height: 64px;
 			margin: 0 20px;
 		}
+		i:hover {
+			color: #a1a1a1;
+		}
 	}
 }
-.ant-divider-horizontal {
-	margin: 0;
+.el-menu--horizontal.el-menu{
+	border-bottom: none;
 }
 </style>
