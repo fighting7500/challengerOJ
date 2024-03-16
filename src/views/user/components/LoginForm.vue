@@ -96,6 +96,7 @@ const login = () => {
 						ElMessage.error(res.msg)
 						return
 					}
+					localStorage.setItem('userInfo', JSON.stringify(res.data.userInfo))
 					ElMessage.success('登录成功')
 					userStore.setToken(res.data.token)
 					userStore.setUserInfo(res.data.userInfo)

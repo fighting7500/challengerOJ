@@ -62,10 +62,10 @@ const onSubmit = () => {
 		ElMessage.error('请同意用户协议')
 		return
 	}
-	loading.value = true
 	// 对表单进行校验
 	formRef.value.validate((valid) => {
 		if (valid) {
+			loading.value = true
 			// 校验通过，发送请求
 			apiRegister(form).then(res => {
 				loading.value = false
