@@ -23,7 +23,7 @@ const handleItem = (command) => {
 		userStore.setToken('')
 		userStore.setUserInfo({})
 		location.reload()
-		
+
 	}
 }
 
@@ -33,8 +33,9 @@ const handleItem = (command) => {
 	<!-- 消息和头像，点击头像显示下拉框 -->
 	<el-dropdown @command="handleItem">
 		<span class="el-dropdown-link">
-			<el-avatar :size="40" :src="userInfo.avatar" v-if="userInfo.avatar"/>
-			<span>{{ userInfo.username || userInfo.usermobile }}<i class="iconfont icon-xiala" style="font-size: 12px;margin-left: 3px;"></i></span>
+			<el-avatar :size="40" :src="userInfo.avatar" v-if="userInfo.avatar" />
+			<span>{{ userInfo.username || userInfo.usermobile }}<i class="iconfont icon-xiala"
+					style="font-size: 12px;margin-left: 3px;"></i></span>
 		</span>
 		<template #dropdown>
 			<el-dropdown-menu>
@@ -47,18 +48,20 @@ const handleItem = (command) => {
 
 
 <style lang="scss" scoped>
- .el-dropdown-link:focus {
-      outline: none;
-    }
+.el-dropdown-link:focus {
+	outline: none;
+}
+
 .el-dropdown-link {
 	display: flex;
 	align-items: center;
 	cursor: pointer;
+
 	.iconfont {
 		display: inline-block;
 		transition: all 0.3s ease;
 	}
-	
+
 	&:hover .iconfont {
 		transform: rotate(180deg);
 	}

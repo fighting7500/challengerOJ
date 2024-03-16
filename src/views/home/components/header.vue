@@ -57,7 +57,7 @@ if (token) {
 					<i class="iconfont icon-sousuo" aria-hidden="true"></i>
 				</a>
 			</div>
-			<div v-if="isLogin">
+			<div v-if="isLogin" class="user">
 				<User :userInfo="userInfo" />
 			</div>
 			<div class="btn" v-else>
@@ -97,7 +97,7 @@ if (token) {
 
 		a {
 			line-height: 64px;
-			margin: 0 20px;
+			margin: 0 13px;
 		}
 
 		i:hover {
@@ -113,12 +113,7 @@ if (token) {
 }
 
 .search-box {
-	// position: absolute;
-	// bottom: 30px;
-	// left: 30px;
-	// box-shadow: 0 2px 25px 0 rgba(0, 0, 0, 0.1);
-	// height: 40px;
-	// padding: 10px;
+	margin-right: 15px;
 	border-radius: 40px;
 	display: flex;
 }
@@ -126,7 +121,7 @@ if (token) {
 .search-btn {
 	color: #888888;
 	font-size: 24px;
-	width: 40px;
+	width: 20px;
 	height: 40px;
 	border-radius: 50%;
 	display: flex;
@@ -157,10 +152,6 @@ if (token) {
 	padding: 0 12px;
 }
 
-.search-box:hover .search-btn {
-	animation: rotate 0.4s linear;
-}
-
 .search-txt:focus {
 	width: 200px;
 	padding: 0 12px;
@@ -169,7 +160,10 @@ if (token) {
 .search-txt:focus {
 	width: 200px;
 }
-
+.user{
+	display: flex;
+	align-items: center;
+}
 .el-menu--horizontal.el-menu {
 	border-bottom: none;
 }
