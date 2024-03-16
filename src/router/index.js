@@ -4,21 +4,35 @@ const router = createRouter({
 	history: createWebHistory(),
 	routes: [
 		{
-			path: '/',
+			path: '',
+			name: 'home',
 			component: () => import('@/views/home/index.vue'),
+		},
+		{
+			path: '/',
+			name: 'index',
+			component: () => import('@/views/index.vue'),
 			children: [
 				{
-					path: '',
-					component: () => import('@/views/home/home.vue'),
+					path: 'learn',
+					name: 'learn',
+					component: () => import('@/views/learn/index.vue'),
 				},
-				// {
-				//     path: 'playground',
-				//     component: () => import('@/views/home/components/playground.vue'),
-				// },
-				// {
-				//     path: 'markdown',
-				//     component: () => import('@/views/home/components/levels.vue'),
-				// },
+				{
+					path: 'question',
+					name: 'question',
+					component: () => import('@/views/question/index.vue'),
+				},
+				{
+					path: 'challenge',
+					name: 'challenge',
+					component: () => import('@/views/challenge/index.vue'),
+				},
+				{
+					path: 'community',
+					name: 'community',
+					component: () => import('@/views/community/index.vue'),
+				}
 			]
 		},
 		{
