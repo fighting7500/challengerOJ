@@ -20,6 +20,7 @@ import Header from './home/components/header.vue';
 	flex-direction: column;
 	.content {
 		flex: 1;
+		background-color: #f7f8fa;
 	}
 }
 </style>

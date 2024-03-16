@@ -45,10 +45,10 @@ if (token) {
 			</router-link>
 		</div>
 		<el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="(index) => handleSelect(index)">
-			<el-menu-item index="learn">学习</el-menu-item>
-			<el-menu-item index="challenge">闯关</el-menu-item>
-			<el-menu-item index="question">题库</el-menu-item>
-			<el-menu-item index="community">讨论</el-menu-item>
+			<el-menu-item index="/learn">学习</el-menu-item>
+			<el-menu-item index="/challenge">闯关</el-menu-item>
+			<el-menu-item index="/question">题库</el-menu-item>
+			<el-menu-item index="/community">讨论</el-menu-item>
 		</el-menu>
 		<div class="right">
 			<div class="search-box">

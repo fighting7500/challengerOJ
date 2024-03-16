@@ -1,5 +1,7 @@
 <script setup>
 import { ref, reactive } from 'vue';
+import { useRouter } from 'vue-router';
+const router = useRouter()
 
 const tabs = reactive([
 	{ name: "精选", content: "精选内容" },
@@ -12,68 +14,109 @@ const tabs = reactive([
 	{ name: "工具", content: "工具内容" },
 	{ name: "其他", content: "其他内容" },
 ])
+
 const currentTab = ref(0)
 const titleList = reactive(['猜你喜欢', '最受关注', '模拟演练', '面试笔记'])
+let tabContentList = reactive([])
+tabContentList = [
+	[
+		{ title: '猜你喜欢1', desc: '描述1', section: 12, node: 66, views: 16632 },
+		{ title: '猜你喜欢2', desc: '描述2', section: 12, node: 66, views: 16632 },
+		{ title: '猜你喜欢2', desc: '描述2', section: 12, node: 66, views: 16632 },
+		{ title: '猜你喜欢2', desc: '描述2', section: 12, node: 66, views: 16632 },
+		{ title: '猜你喜欢2', desc: '描述2', section: 12, node: 66, views: 16632 },
+		{ title: '猜你喜欢2', desc: '描述2', section: 12, node: 66, views: 16632 },
+		{ title: '猜你喜欢2', desc: '描述2', section: 12, node: 66, views: 16632 },
+		{ title: '猜你喜欢2', desc: '描述2', section: 12, node: 66, views: 16632 },
+		{ title: '猜你喜欢2', desc: '描述2', section: 12, node: 66, views: 16632 },
+		{ title: '猜你喜欢2', desc: '描述2', section: 12, node: 66, views: 16632 },
+		{ title: '猜你喜欢2', desc: '描述2', section: 12, node: 66, views: 16632 },
+		{ title: '猜你喜欢2', desc: '描述2', section: 12, node: 66, views: 16632 },
+		{ title: '猜你喜欢2', desc: '描述2', section: 12, node: 66, views: 16632 },
+		{ title: '猜你喜欢2', desc: '描述2', section: 12, node: 66, views: 16632 },
+		{ title: '猜你喜欢2', desc: '描述2', section: 12, node: 66, views: 16632 },
+		{ title: '猜你喜欢2', desc: '描述2', section: 12, node: 66, views: 16632 },
+		{ title: '猜你喜欢2', desc: '描述2', section: 12, node: 66, views: 16632 },
+		{ title: '猜你喜欢2', desc: '描述2', section: 12, node: 66, views: 16632 },
+	],
+	[
+		{ title: '最受关注1', desc: '描述1', section: 12, node: 66, views: 16632 },
+		{ title: '最受关注2', desc: '描述2', section: 12, node: 66, views: 16632 },
+	],
+	[
+		{ title: '模拟演练1', desc: '描述1', section: 12, node: 66, views: 16632 },
+		{ title: '模拟演练2', desc: '描述2', section: 12, node: 66, views: 16632 },
+	],
+	[
+		{ title: '面试笔记1', desc: '描述1', section: 12, node: 66, views: 16632 },
+		{ title: '面试笔记2', desc: '描述2', section: 12, node: 66, views: 16632 }
+	],
+]
+const count = reactive(Array(titleList.length).fill(6));
+const loadMore = (index) => {
+	count[index] += 6;
+}
 
+const getDetail = (item) => {
+	router.push({ name: 'detail', params: { id: item.title } })
+}
 </script>
 
 <template>
-	<div class="app">
-		<div class="header">
-			<div class="head-content">
-				<div class="content-left">
-					<h1>探索知识地图</h1>
-					<span>通往编程高峰的必经之路</span>
-				</div>
-				<div class="content-center">22</div>
-				<div>33</div>
+	<div class="header">
+		<div class="head-content">
+			<div class="content-left">
+				<h1>探索知识地图</h1>
+				<span>通往编程高峰的必经之路</span>
+			</div>
+			<div class="content-center">22</div>
+			<div>33</div>
+		</div>
+	</div>
+	<div class="container">
+		<!-- tab -->
+		<div class="tabs">
+			<div class="tab" v-for="(tab, index) in tabs" :key="index" @click="currentTab = index"
+				:class="{ active: index === currentTab }">
+				<span>{{ tab.name }}</span>
 			</div>
 		</div>
-		<div class="container">
-			<!-- tab -->
-			<div class="tabs">
-				<div class="tab" v-for="(tab, index) in tabs" :key="index" @click="currentTab = index"
-					:class="{ active: index === currentTab }">
-					<span>{{ tab.name }}</span>
-				</div>
-			</div>
-			<!-- 内容 -->
-			<div class="content">
-				<div class="category" v-for="(item, index) in titleList" :key="index">
-					{{ item }}
-					<div class="moduleContainer">
-						<div class="module" v-for="i in 10" :key="i">
-							<div class="moduleContent">
-								<div class="img">
-									<el-image style="width: 100%; height: 100%;border-radius: 8px;"
-										src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-										fit="fill" />
-								</div>
-								<div class="module-right">
-									<div class="moduleTitle">标题</div>
-									<div class="moduleDesc">描述述描述述描述述描述述描述述描述述描述述描述述描述述描述述描述述描述述描述述</div>
-									<!-- 章节 观看人数 -->
-									<div class="bottom">
-										<span>12章</span>
-										<span> · </span>
-										<span>66节</span>
-										<text><i class="iconfont icon-yanjing"></i>16632</text>
-									</div>
+		<!-- 内容 -->
+		<div class="content">
+			<div class="category" v-for="(tabItem, index) in titleList" :key="index">
+				{{ tabItem }}
+				<div class="moduleContainer">
+					<div class="module" v-for="(item, i) in tabContentList[index].slice(0, count[index])" :key="i" @click="() => getDetail(item)">
+						<div class="moduleContent">
+							<div class="img">
+								<el-image style="width: 100%; height: 100%;border-radius: 8px;"
+									src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
+									fit="fill" />
+							</div>
+							<div class="module-right">
+								<div class="moduleTitle">{{ item.title }}</div>
+								<div class="moduleDesc">{{ item.desc }}</div>
+								<!-- 章节 观看人数 -->
+								<div class="bottom">
+									<span>{{ item.section }}章</span>
+									<span> · </span>
+									<span>{{ item.node }}节</span>
+									<text><i class="iconfont icon-yanjing"></i>{{ item.views }}</text>
 								</div>
 							</div>
 						</div>
+					</div>
+					<div class="view-more" v-if="count[index] < tabContentList[index].length">
+						<div class="button" @click="loadMore(index)">加载更多</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	<el-backtop :right="80" :bottom="100" />
 </template>
 
 <style lang="scss" scoped>
-.app {
-	background-color: #f7f8fa;
-}
-
 .header {
 	min-height: 280px;
 	background-image: url('@/assets/banner.png');
@@ -166,7 +209,14 @@ const titleList = reactive(['猜你喜欢', '最受关注', '模拟演练', '面
 		border-radius: 8px;
 		margin-bottom: 20px;
 		display: flex;
+		cursor: pointer;
+		transition: all 0.3s;
 
+		&:hover {
+			// 往上偏移
+			transform: translateY(-4px);
+			box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+		}
 		.img {
 			flex: 1;
 			padding: 8px;
@@ -207,11 +257,29 @@ const titleList = reactive(['猜你喜欢', '最受关注', '模拟演练', '面
 				font-size: 12px;
 				line-height: 16px;
 				color: rgba(60, 60, 67, 0.6);
+
 				.iconfont {
 					font-weight: 800;
 					margin: 0 4px 0 8px;
 				}
 			}
+		}
+	}
+
+	.view-more {
+		width: 100%;
+
+		.button {
+			background-color: rgba(0, 0, 0, 0.05);
+			border-radius: 8px;
+			width: 182px;
+			height: 32px;
+			line-height: 32px;
+			text-align: center;
+			font-size: 14px;
+			font-weight: 400;
+			margin: auto;
+			cursor: pointer;
 		}
 	}
 }
