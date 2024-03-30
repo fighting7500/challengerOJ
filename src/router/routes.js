@@ -8,56 +8,72 @@
 export const routes = [
     {
         path: '/',
-        name: 'home',
-        component: () => import('@/views/home/index.vue')
+        name: '首页',
+        component: () => import('@/views/home/index.vue'),
+        meta: {
+            hidden: true
+        }
     },
 
     {
         path: '/learn',
-        name: 'learn',
+        name: '探索',
         component: () => import('@/views/learn/index.vue')
     },
     {
         path: '/question',
-        name: 'question',
+        name: '题库',
         component: () => import('@/views/question/index.vue')
     },
     {
+        path: '/challenge',
+        name: '挑战',
+        component: () => import('@/views/challenge/index.vue')
+    },
+    {
         path: '/community',
-        name: 'community',
+        name: '社区',
         component: () => import('@/views/community/index.vue')
     },
     {
         path: '/learn/detail/:id',
-        name: 'detail',
-        component: () => import('@/views/detail/index.vue')
+        name: '详情',
+        component: () => import('@/views/detail/index.vue'),
+        meta: {
+            hidden: true
+        }
     },
     {
-        path: '/login',
-        name: 'login',
-        component: () => import('@/views/user/login.vue'),
+        path: '/user',
+        name: 'user',
+        meta: {
+            hidden: true
+        },
         children: [
             {
                 path: '',
+                name: 'UserInfo',
+                component: () => import('@/views/user/UserInfo.vue')
+            },
+            {
+                path: 'login',
                 name: 'login',
-                component: () => import('@/views/user/components/LoginForm.vue')
+                component: () => import('@/views/user/LoginForm.vue')
             },
             {
                 path: 'register',
                 name: 'register',
-                component: () => import('@/views/user/components/register.vue')
+                component: () => import('@/views/user/register.vue')
             }
         ]
-    },
-    {
-        path: '/challenge',
-        name: 'challenge',
-        component: () => import('@/views/challenge/index.vue')
     },
     // 404
     {
         path: '/:pathMatch(.*)*',
         name: 'not-found',
-        component: () => import('@/views/error/404.vue')
+        component: () => import('@/views/error/404.vue'),
+        meta: {
+            hidden: true
+        }
     }
 ]

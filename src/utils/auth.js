@@ -1,20 +1,17 @@
 // auth.js
-import Cookies from 'js-cookie';
+import Cookies from 'js-cookie'
 
-let Token = 'code_challenger_token'
 // 获取token
-export function getToken() {
+export function getToken(Token = 'access_token') {
     return Cookies.get(Token)
 }
 
 // 设置token
-export function setToken(token) {
-    return Cookies.set(Token, token)
+export function setToken(token, Key = 'access_token') {
+    return Cookies.set(Key, token)
 }
 
 // 删除token
-export function removeToken() {
+export function removeToken(Token = 'access_token') {
     return Cookies.remove(Token)
 }
-
-

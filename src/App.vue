@@ -6,10 +6,24 @@
  * @Last Modified time : 2024/3/24
 -->
 <template>
-    <basic-layout />
+    <div id="app">
+        <template v-if="route.path.startsWith('/login')">
+            <user-layout />
+        </template>
+        <template v-else-if="route.path.startsWith('/challenge')">
+            <router-view />
+        </template>
+        <template v-else>
+            <basic-layout />
+        </template>
+    </div>
 </template>
 
 <style scoped></style>
-<script setup lang="ts">
+<script setup>
 import BasicLayout from '@/layout/BasicLayout.vue'
+import { useRoute } from 'vue-router'
+import UserLayout from '@/layout/UserLayout.vue'
+
+const route = useRoute()
 </script>

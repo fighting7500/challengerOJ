@@ -5,14 +5,15 @@
  * @Version: 1.0
  * @Last Modified time : 2024/3/29
 -->
-<script setup>
-
-</script>
+<script setup></script>
 
 <template>
-  $END$
+    <div id="user-info">个人中心</div>
 </template>
 
 <style scoped lang="scss">
-
+#user-info {
+    width: 1200px;
+    margin: 0 auto;
+}
 </style>

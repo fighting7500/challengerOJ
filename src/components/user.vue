@@ -1,46 +1,78 @@
 <script setup>
-import { ref } from 'vue'
-import { removeToken } from '@/utils/auth.js'
+import { Message } from '@arco-design/web-vue'
 import { useUserStore } from '@/store/userStore.js'
+import { computed } from 'vue'
+import { apiLogout } from '@/api/user.js'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 const userStore = useUserStore()
 
-const props = defineProps({
-    userInfo: {
-        type: Object,
-        default: () => {}
-    }
-})
-
-const handleItem = (command) => {
-    if (command == 1) {
-        console.log('个人中心')
-    } else if (command == 2) {
-        // 退出登录
-        removeToken('token')
-        // 清空缓存
-        localStorage.removeItem('userInfo')
-        // 删除store中的token和userInfo
-        userStore.setToken('')
-        userStore.setUserInfo({})
+const userCenter = () => {
+    router.push({ name: 'UserInfo' })
+}
+const userInfo = computed(() => userStore.userInfo)
+const logOut = () => {
+    apiLogout().then((res) => {
+        if (res.status !== 200) {
+            Message.error(res.msg)
+            return
+        }
+        Message.success('退出成功')
+        // 刷新页面
         location.reload()
-    }
+    })
 }
 </script>
 
 <template>
     <!-- 消息和头像，点击头像显示下拉框 -->
-    <el-dropdown @command="handleItem">
-        <span class="el-dropdown-link">
-            <el-avatar :size="40" :src="userInfo.avatar" v-if="userInfo.avatar" />
-            <span>{{ userInfo.username || userInfo.usermobile }}<i class="iconfont icon-xiala" style="font-size: 12px; margin-left: 3px"></i></span>
-        </span>
-        <template #dropdown>
-            <el-dropdown-menu>
-                <el-dropdown-item command="1">个人中心</el-dropdown-item>
-                <el-dropdown-item command="2">退出</el-dropdown-item>
-            </el-dropdown-menu>
+    <a-dropdown trigger="click">
+        <a-avatar :size="32" :style="{ marginRight: '8px', cursor: 'pointer' }">
+            <img alt="avatar" :src="userInfo.avatar" />
+        </a-avatar>
+        <template #content>
+            <div class="dropdown">
+                <div class="header">
+                    <a-avatar :size="55" :style="{ marginRight: '8px', cursor: 'pointer' }">
+                        <img alt="avatar" :src="userInfo.avatar" />
+                    </a-avatar>
+                    <div>
+                        <h2>{{ userInfo.username }}</h2>
+                        <span>{{ userInfo.usermobile }}</span>
+                    </div>
+                </div>
+                <a-doption>
+                    <a-space @click="userCenter">
+                        <icon-user />
+                        <span> 个人中心 </span>
+                    </a-space>
+                </a-doption>
+                <a-doption>
+                    <a-space @click="logOut">
+                        <icon-export />
+                        <span> 退出 </span>
+                    </a-space>
+                </a-doption>
+                <!--<a-doption>
+					<a-space @click="$router.push({ name: 'Setting' })">
+						<icon-settings />
+						<span>
+							{{ $t('messageBox.userSettings') }}
+						</span>
+					</a-space>
+				</a-doption>
+				<a-doption>
+					<a-space @click="handleLogout">
+						<icon-export />
+						<span>
+							{{ $t('messageBox.logout') }}
+						</span>
+					</a-space>
+				</a-doption>-->
+            </div>
         </template>
-    </el-dropdown>
+    </a-dropdown>
 </template>
 
 <style lang="scss" scoped>
@@ -61,5 +93,14 @@ const handleItem = (command) => {
     &:hover .iconfont {
         transform: rotate(180deg);
     }
+}
+.dropdown {
+    padding: 10px;
+}
+.header {
+    margin-bottom: 20px;
+    padding-right: 20px;
+    display: flex;
+    align-items: center;
 }
 </style>

@@ -6,6 +6,9 @@ import { vitePluginForArco } from '@arco-plugins/vite-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    server: {
+        port: 3468
+    },
     plugins: [
         vue(),
         vitePluginForArco({

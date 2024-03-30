@@ -1,6 +1,6 @@
 <script setup>
-import GlobalHeader from '@/components/GlobalHeader.vue'
 import GlobalFooter from '@/components/GloabalFooter.vue'
+import GlobalHeader from '@/components/GlobalHeader.vue'
 </script>
 
 <template>
@@ -21,15 +21,7 @@ import GlobalFooter from '@/components/GloabalFooter.vue'
 <style lang="scss" scoped>
 #layout {
     min-height: 100vh;
-}
-
-.header {
-    margin: 0 auto;
-    width: 1200px;
-}
-
-.content {
-    padding: 24px;
+    background-color: #fff;
 }
 
 .footer {

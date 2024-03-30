@@ -1,8 +1,8 @@
 @font-face {
   font-family: 'iconfont';  /* Project id 4225649 */
-  src: url('//at.alicdn.com/t/c/font_4225649_mg66mlpafb8.woff2?t=1710917895129') format('woff2'),
-       url('//at.alicdn.com/t/c/font_4225649_mg66mlpafb8.woff?t=1710917895129') format('woff'),
-       url('//at.alicdn.com/t/c/font_4225649_mg66mlpafb8.ttf?t=1710917895129') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_4225649_iiskw3g8eko.woff2?t=1711634867696') format('woff2'),
+  url('//at.alicdn.com/t/c/font_4225649_iiskw3g8eko.woff?t=1711634867696') format('woff'),
+  url('//at.alicdn.com/t/c/font_4225649_iiskw3g8eko.ttf?t=1711634867696') format('truetype');
 }
 
 .iconfont {
@@ -13,8 +13,8 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-tijie:before {
-  content: "\e601";
+.icon-daanjiexi:before {
+  content: "\e60c";
 }
 
 .icon-code:before {
@@ -67,4 +67,16 @@
 
 .icon-jishi:before {
   content: "\e63b";
+}
+
+.icon-suiji:before {
+  content: "\e622";
+}
+
+.icon-shezhi:before {
+  content: "\e62d";
+}
+
+.icon-paixu:before {
+  content: "\e7ce";
 }
