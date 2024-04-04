@@ -44,3 +44,15 @@ a {
 		border-right: initial;
 	}
 }
+.back-ground-container .arco-select-view-single,
+.back-ground-container .arco-input-wrapper {
+	border-radius: 5px;
+}
+.arco-table-th {
+	color: #3c3c4399;
+	background-color: #fff;
+	border-bottom: 1px solid rgb( 229,230,235 );
+}
+.arco-table-td {
+	border-bottom: initial;
+}

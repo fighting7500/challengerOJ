@@ -1,11 +1,11 @@
 <script setup>
 import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, RouterLink } from 'vue-router'
 import Captcha from './components/Captcha.vue'
-import { apiverifyCode, apiLogin } from '@/api/user.js'
+import { apiVerifyCode, apiLogin } from '@/api/user.js'
 import '@/styles/login.scss'
 import { useUserStore } from '@/store/userStore.js'
-import { Message } from '@arco-design/web-vue'
+import { Message, Notification } from '@arco-design/web-vue'
 
 const userStore = useUserStore()
 
@@ -45,7 +45,7 @@ const btnLoading = ref(false)
 const getCode = () => {
     if (isSendCode.value) return
     isSendCode.value = true
-    apiverifyCode(queryForm.userMobile).then((res) => {
+    apiVerifyCode(queryForm.userMobile).then((res) => {
         btnLoading.value = false
         if (res.status != 200) {
             Message.error(res.msg)
@@ -82,57 +82,44 @@ const verify = () => {
 }
 
 const login = () => {
-    // 账号密码登录
-    if (activeName.value === '1') {
-        // 做表单校验
-        accountForm.value.validate((valid) => {
-            if (valid) return
-            const param = reactive({
-                isCode: activeName.value,
-                account: queryForm.account,
-                password: queryForm.password
-            })
-            loading.value = true
+    const form = activeName.value === '1' ? accountForm.value : codeForm.value
+    const param = reactive({
+        isCode: activeName.value,
+        account: queryForm.account,
+        password: queryForm.password,
+        usermobile: queryForm.userMobile,
+        code: queryForm.code
+    })
 
-            apiLogin(param).then((res) => {
-                loading.value = false
-                if (res.status !== 200) {
-                    Message.error(res.msg)
-                    return
-                }
-                Message.success('登录成功')
-                userStore.setUserInfo(res.data)
-                accountForm.value.resetFields()
-                router.push('/')
-            })
-        })
-        // 手机号登录
-    } else {
-        codeForm.value.validate((valid) => {
-            if (valid) return
-            const param = {
-                isCode: activeName.value,
-                usermobile: queryForm.userMobile,
-                code: queryForm.code
+    form.validate((valid) => {
+        if (valid) return
+        loading.value = true
+
+        apiLogin(param).then((res) => {
+            loading.value = false
+            if (res.status !== 200) {
+                Message.error(res.msg)
+                return
             }
-            loading.value = true
-            apiLogin(param).then((res) => {
-                loading.value = false
-                if (res.status !== 200) {
-                    Message.error(res.msg)
-                    return
-                }
-                Message.success('登录成功')
-                userStore.setUserInfo(res.data)
-                codeForm.value.resetFields()
-                router.push('/')
-            })
+            Message.success('登录成功')
+            userStore.setUserInfo(res.data)
+            if (res.data.recordInfo) {
+                res.data.recordInfo.forEach((item) => {
+                    Notification.success({
+                        title: `${item.description}`,
+                        content: `+${item.points}`
+                        // icon: `icon-jinbi`
+                    })
+                })
+            }
+            form.resetFields()
+            router.push('/')
         })
-    }
+    })
 }
 
 const routePush = () => {
-    router.push('/login/register')
+    router.push('/user/register')
 }
 const tabClick = (key) => {
     activeName.value = key
@@ -164,7 +151,7 @@ const tabClick = (key) => {
                             <div class="login-form-password-actions">
                                 <!--                                <a-checkbox checked="rememberPassword" :value="queryForm.remember"> 记住我</a-checkbox>-->
                                 <div></div>
-                                <a-link>忘记密码</a-link>
+                                <router-link to="/user/forget">忘记密码</router-link>
                             </div>
                             <a-button class="login" type="primary" long :loading="loading" html-type="submit">登 录 </a-button>
                         </a-space>

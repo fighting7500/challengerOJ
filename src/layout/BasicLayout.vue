@@ -1,6 +1,7 @@
 <script setup>
 import GlobalFooter from '@/components/GloabalFooter.vue'
 import GlobalHeader from '@/components/GlobalHeader.vue'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>

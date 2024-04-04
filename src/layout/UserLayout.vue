@@ -6,7 +6,10 @@
  * @Last Modified time : 2024/3/25
 -->
 <script setup>
+import { RouterLink, RouterView, useRoute } from 'vue-router'
 import GlobalFooter from '@/components/GloabalFooter.vue'
+
+const route = useRoute()
 </script>
 
 <template>
@@ -27,7 +30,7 @@ import GlobalFooter from '@/components/GloabalFooter.vue'
         <a-layout-content class="content">
             <router-view />
         </a-layout-content>
-        <a-layout-footer class="footer">
+        <a-layout-footer class="footer" v-if="!route.path.startsWith('/admin')">
             <global-footer />
         </a-layout-footer>
     </a-layout>

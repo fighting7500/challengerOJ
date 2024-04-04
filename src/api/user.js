@@ -6,18 +6,18 @@ export function apiVerifyCaptcha(captchaVerifyParam) {
         url: '/user/verifyCaptcha',
         method: 'post',
         data: {
-            captchaVerifyParam: captchaVerifyParam
+            CaptchaVerifyParam: captchaVerifyParam
         }
     })
 }
 
 // 发送验证码
-export function apiverifyCode(mobile) {
+export function apiVerifyCode(mobile) {
     return request({
         url: '/user/verifyCode',
         method: 'post',
         data: {
-            usermobile: mobile
+            UserMobile: mobile
         }
     })
 }
@@ -28,12 +28,11 @@ export function apiLogin(params) {
         url: '/user/login',
         method: 'post',
         data: {
-            isCode: params.isCode,
-            usermobile: params.usermobile,
-            password: params.password,
-            code: params.code,
-            remember: params.remember,
-            account: params.account
+            IsCode: params.isCode,
+            UserMobile: params.usermobile,
+            Password: params.password,
+            Code: params.code,
+            Account: params.account
         }
     })
 }
@@ -56,11 +55,11 @@ export function apiRegister(params) {
         url: '/user/register',
         method: 'post',
         data: {
-            usermobile: params.userMobile,
-            password: params.password,
-            code: params.code,
-            username: params.userName,
-            email: params.email
+            UserMobile: params.userMobile,
+            Password: params.password,
+            Code: params.code,
+            UserName: params.userName,
+            Email: params.email
         }
     })
 }
@@ -89,5 +88,18 @@ export function apiLogout() {
     return request({
         url: '/user/logout',
         method: 'post'
+    })
+}
+
+// 重置密码
+export function apiResetPassword(params) {
+    return request({
+        url: '/user/resetPassword',
+        method: 'post',
+        data: {
+            UserMobile: params.userMobile,
+            Password: params.password,
+            Code: params.code
+        }
     })
 }

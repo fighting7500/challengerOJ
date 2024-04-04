@@ -9,7 +9,7 @@ const router = useRouter()
 const userStore = useUserStore()
 
 const userCenter = () => {
-    router.push({ name: 'UserInfo' })
+    router.push({ name: 'profile' })
 }
 const userInfo = computed(() => userStore.userInfo)
 const logOut = () => {

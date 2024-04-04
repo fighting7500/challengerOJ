@@ -14,7 +14,6 @@ export const routes = [
             hidden: true
         }
     },
-
     {
         path: '/learn',
         name: '探索',
@@ -44,17 +43,62 @@ export const routes = [
         }
     },
     {
+        path: '/admin',
+        name: '后台管理',
+        component: () => import('@/views/admin/Admin.vue'),
+        meta: {
+            isAdmin: true
+        },
+        children: [
+            {
+                path: '',
+                name: '管理员首页',
+                component: () => import('@/views/admin/AdminIndex.vue')
+            },
+            {
+                path: 'question',
+                name: '题目管理',
+                component: () => import('@/views/admin/question.vue')
+            },
+            {
+                path: 'user-list',
+                name: '用户管理',
+                component: () => import('@/views/admin/UserList.vue')
+            },
+            {
+                path: 'answer',
+                name: '题解管理',
+                component: () => import('@/views/admin/AnswerList.vue')
+            },
+            {
+                path: 'article',
+                name: '文章管理',
+                component: () => import('@/views/admin/ArticleList.vue')
+            },
+            {
+                path: 'category',
+                name: '分类管理',
+                component: () => import('@/views/admin/CategoryList.vue')
+            },
+            {
+                path: 'points',
+                name: '积分管理',
+                component: () => import('@/views/admin/PointsList.vue')
+            },
+            {
+                path: 'setting',
+                name: '系统设置',
+                component: () => import('@/views/admin/Setting.vue')
+            }
+        ]
+    },
+    {
         path: '/user',
         name: 'user',
         meta: {
             hidden: true
         },
         children: [
-            {
-                path: '',
-                name: 'UserInfo',
-                component: () => import('@/views/user/UserInfo.vue')
-            },
             {
                 path: 'login',
                 name: 'login',
@@ -64,8 +108,21 @@ export const routes = [
                 path: 'register',
                 name: 'register',
                 component: () => import('@/views/user/register.vue')
+            },
+            {
+                path: 'forget',
+                name: 'forget',
+                component: () => import('@/views/user/ResetPassword.vue')
             }
         ]
+    },
+    {
+        path: '/profile',
+        name: 'profile',
+        component: () => import('@/views/user/UserProfile.vue'),
+        meta: {
+            hidden: true
+        }
     },
     // 404
     {

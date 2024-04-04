@@ -9,22 +9,32 @@
 import { ref } from 'vue'
 
 const isWrap = ref(false)
+defineProps({
+    isQuestion: {
+        type: Boolean,
+        default: false
+    },
+    categoryList: {
+        type: Array,
+        default: () => []
+    }
+})
 </script>
 
 <template>
     <div class="tags">
         <div class="reactive" :style="{ flexWrap: isWrap ? 'wrap' : 'nowrap' }">
-            <div class="tag" v-for="(index, item) in 50" :key="index" @click="() => getDetail(item)">
+            <div class="tag" v-for="item in categoryList" :key="item.id" @click="() => getDetail(item)">
                 <a href="">
-                    <span>数组</span>
-                    <span>928</span>
+                    <span>{{ item.name }}</span>
+                    <span>{{ item.count }}</span>
                 </a>
             </div>
         </div>
-        <div class="end" @click="() => (isWrap = !isWrap)">
-            <span class="end-start"></span>
-            <span class="end-end">
-                <span>展开</span>
+        <div class="end" :style="{ bottom: isQuestion ? '8px' : '10px' }" @click="() => (isWrap = !isWrap)" v-if="categoryList.length > 10">
+            <span class="end-start" :style="{ backgroundImage: 'linear-gradient(to left, #f5f5f5, #fff0)' }"></span>
+            <span class="end-end" :style="{ backgroundColor: '#fff' }">
+                <span>{{ isWrap ? '收起' : '展开' }}</span>
                 <i class="iconfont" :class="isWrap ? 'icon-chevronsup' : 'icon-chevronsdown'"></i>
             </span>
         </div>
@@ -34,6 +44,7 @@ const isWrap = ref(false)
 <style scoped lang="scss">
 .tags {
     display: flex;
+    align-items: center;
     width: 100%;
     position: relative;
 
@@ -68,8 +79,8 @@ const isWrap = ref(false)
     .end {
         position: absolute;
         right: 0;
-        bottom: 10px;
         display: flex;
+        align-items: center;
         align-self: flex-end;
         color: #3c3c4399;
         z-index: 1;
@@ -86,7 +97,6 @@ const isWrap = ref(false)
             display: flex;
             align-items: center;
             cursor: pointer;
-            background-color: #f3f9fb;
         }
     }
 }

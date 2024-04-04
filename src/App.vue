@@ -7,7 +7,7 @@
 -->
 <template>
     <div id="app">
-        <template v-if="route.path.startsWith('/login')">
+        <template v-if="route.path.startsWith('/user') || route.path.startsWith('/admin')">
             <user-layout />
         </template>
         <template v-else-if="route.path.startsWith('/challenge')">
@@ -22,7 +22,7 @@
 <style scoped></style>
 <script setup>
 import BasicLayout from '@/layout/BasicLayout.vue'
-import { useRoute } from 'vue-router'
+import { useRoute, RouterView } from 'vue-router'
 import UserLayout from '@/layout/UserLayout.vue'
 
 const route = useRoute()

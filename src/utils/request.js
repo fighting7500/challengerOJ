@@ -47,12 +47,15 @@ service.interceptors.response.use(
             // token不存在
             // 重新登录
             Message.error('用户信息登录超时，请重新登录')
+            setTimeout(() => {
+                window.location.href = '/user/login'
+            }, 1000)
         } else {
             return response.data
         }
     },
     (error) => {
-        Message.error(error.message)
+        Message.error('请求错误', error.message)
         return Promise.reject(error)
     }
 )

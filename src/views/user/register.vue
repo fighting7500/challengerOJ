@@ -1,7 +1,7 @@
 <script setup>
 import { reactive, ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { apiverifyCode, apiCheckUser, apiRegister } from '@/api/user.js'
+import { useRouter, RouterLink } from 'vue-router'
+import { apiVerifyCode, apiCheckUser, apiRegister } from '@/api/user.js'
 import { Message } from '@arco-design/web-vue'
 import zxcvbn from 'zxcvbn'
 
@@ -90,7 +90,7 @@ const sendCode = async () => {
     console.log(res)
     if (!res) return
     codeLoading.value = true
-    apiverifyCode(form.userMobile).then((res) => {
+    apiVerifyCode(form.userMobile).then((res) => {
         codeLoading.value = false
         if (res.status !== 200) {
             Message.error(res.msg)
@@ -111,7 +111,7 @@ const sendCode = async () => {
 // 校验用户名、邮箱、手机号是否已存在
 const verify = async (type, value) => {
     const res = await apiCheckUser({ type, value })
-    if (res.status !== 200) {
+    if (res.status === 200) {
         Message.error(res.msg)
         return false
     }
@@ -147,7 +147,7 @@ const checkPassword = (value) => {
                     <!-- 已有账号，去登录 -->
                     <div>
                         <span>已有账号，</span>
-                        <router-link to="/login">去登录</router-link>
+                        <router-link to="/user/login">去登录</router-link>
                     </div>
                 </div>
                 <a-divider />
@@ -164,8 +164,8 @@ const checkPassword = (value) => {
                     <a-form-item field="code" :hide-asterisk="true">
                         <a-input class="code" v-model="form.code" placeholder="验证码">
                             <template #suffix>
-                                <a-typography-text class="mx-1" :class="{ enabled: isEnabled }" type="text" @click="sendCode" :loading="codeLoading" v-if="!isSendCode">获取验证码 </a-typography-text>
-                                <text class="mx-1" type="primary" v-else>{{ second }}秒后重新获取</text>
+                                <a-typography-text class="mx-1" :class="{ enabled: isEnabled }" type="text" @click="sendCode" :loading="codeLoading" v-if="!isSendCode">获取验证码</a-typography-text>
+                                <text type="primary" v-else>{{ second }}秒后重新获取</text>
                             </template>
                         </a-input>
                     </a-form-item>
@@ -224,6 +224,10 @@ const checkPassword = (value) => {
 }
 
 .code {
+    .mx-1 {
+        display: flex;
+        align-items: center;
+    }
     span {
         cursor: default;
         color: gray;

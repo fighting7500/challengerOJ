@@ -148,9 +148,9 @@ onBeforeUnmount(() => {
                 <User :userInfo="userInfo" />
             </div>
             <div class="btn" v-else>
-                <a-button type="text" shape="round" @click="() => router.push('/login')">登录</a-button>
+                <a-button type="text" shape="round" @click="() => router.push('/user/login')">登录</a-button>
                 <span>或</span>
-                <a-button type="primary" shape="round" @click="() => router.push('/login/register')"> 注册</a-button>
+                <a-button type="primary" shape="round" @click="() => router.push('/user/register')"> 注册</a-button>
             </div>
         </a-col>
     </a-row>

@@ -20,15 +20,19 @@ const visibleRoutes = computed(() => {
         if (item.meta?.hidden) {
             return false
         }
-        // 根据权限过滤菜单
-        // if (!checkAccess(store.state.user.loginUser, item?.meta?.access))
-        // {
-        //     return false
-        // }
+        // 根据权限过滤菜单, 如果是管理员界面，只有管理员才能看到
+        if (item.path === '/admin') {
+            return useUserStore().userInfo.role === '0'
+        }
         return true
     })
 })
 const handleSelect = (key) => {
+    // 如果是管理员界面，新建一个窗口
+    if (key === '/admin') {
+        window.open('/admin')
+        return
+    }
     router.push({
         path: key
     })

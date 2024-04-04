@@ -1,13 +1,44 @@
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import FoldList from '@/components/FoldList.vue'
+import { apiCategories, apiProblems } from '@/api/question.js'
+import { Message } from '@arco-design/web-vue'
 
 const query = ref({
     source: '',
     level: '',
     status: '',
-    tag: ''
+    tag: '',
+    PageSize: 10,
+    PageNum: 1
 })
+let categoryList = ref([])
+let data = ref([])
+
+onMounted(async () => {
+    await getCategoryList()
+    await getQuestionList()
+})
+// 获取分类列表
+const getCategoryList = async () => {
+    const res = await apiCategories()
+    if (res.status !== 200) {
+        Message.error(res.msg)
+        return
+    }
+    categoryList.value = res.data.Rows
+}
+// 获取题目列表
+const getQuestionList = async () => {
+    const res = await apiProblems(query.value)
+    if (res.status !== 200) {
+        Message.error(res.msg)
+        return
+    }
+    data.value = res.data.Rows
+    console.log('data', data)
+}
+const input4 = ref('')
 const sourceList = reactive([
     { value: '1', label: 'LeetCode' },
     { value: '2', label: '牛客网' },
@@ -77,81 +108,6 @@ const tagList = reactive([
     { value: '50', label: '最短路径' },
     { value: '51', label: '最小生成树' }
 ])
-const tableData = reactive([
-    {
-        status: '未开始',
-        name: '两数之和',
-        anwser: '456',
-        passRate: '45%',
-        level: '简单',
-        num: 928
-    },
-    {
-        status: '进行中',
-        name: '两数之和',
-        anwser: '456',
-        passRate: '45%',
-        level: '简单',
-        num: 928
-    },
-    {
-        status: '已完成',
-        name: '两数之和',
-        anwser: '456',
-        passRate: '45%',
-        level: '简单',
-        num: 928
-    },
-    {
-        status: '未开始',
-        name: '两数之和',
-        anwser: '456',
-        passRate: '45%',
-        level: '简单',
-        num: 928
-    },
-    {
-        status: '进行中',
-        name: '两数之和',
-        anwser: '456',
-        passRate: '45%',
-        level: '简单',
-        num: 928
-    },
-    {
-        status: '已完成',
-        name: '两数之和',
-        anwser: '456',
-        passRate: '45%',
-        level: '简单',
-        num: 928
-    },
-    {
-        status: '未开始',
-        name: '两数之和',
-        anwser: '456',
-        passRate: '45%',
-        level: '简单',
-        num: 928
-    },
-    {
-        status: '进行中',
-        name: '两数之和',
-        anwser: '456',
-        passRate: '45%',
-        level: '简单',
-        num: 928
-    },
-    {
-        status: '已完成',
-        name: '两数之和',
-        anwser: '456',
-        passRate: '45%',
-        level: '简单',
-        num: 928
-    }
-])
-const loading = ref(false)
 const columns = [
     {
         title: '状态',
@@ -159,62 +115,25 @@ const columns = [
     },
     {
         title: '题目',
-        dataIndex: 'question'
+        dataIndex: 'name'
     },
     {
         title: '题解',
-        dataIndex: 'anwser'
+        dataIndex: 'solution'
     },
     {
         title: '通过率',
-        dataIndex: 'successRate'
+        dataIndex: 'pass_rate'
     },
     {
         title: '难度',
-        dataIndex: 'level'
+        dataIndex: 'difficulty'
     },
     {
         title: '人数',
-        dataIndex: 'count'
+        dataIndex: 'user_count'
     }
 ]
-const data = reactive([
-    {
-        status: '1',
-        question: 'Jane Doe',
-        anwser: 23000,
-        successRate: '32 Park Road, London',
-        email: 'jane.doe@example.com'
-    },
-    {
-        status: '2',
-        question: 'Alisa Ross',
-        anwser: 25000,
-        successRate: '35 Park Road, London',
-        email: 'alisa.ross@example.com'
-    },
-    {
-        status: '3',
-        question: 'Kevin Sandra',
-        anwser: 22000,
-        successRate: '31 Park Road, London',
-        email: 'kevin.sandra@example.com'
-    },
-    {
-        status: '4',
-        question: 'Ed Hellen',
-        anwser: 17000,
-        successRate: '42 Park Road, London',
-        email: 'ed.hellen@example.com'
-    },
-    {
-        status: '5',
-        question: 'William Smith',
-        anwser: 27000,
-        successRate: '62 Park Road, London',
-        email: 'william.smith@example.com'
-    }
-])
 const pagination = reactive({
     current: 1,
     pageSize: 20
@@ -226,23 +145,25 @@ const pagination = reactive({
         <div class="container">
             <a-row justify="space-between" align="middle">
                 <a-col :span="8" class="head-left">
-                    <p>
+                    <div>
                         <b>编程闯关</b>
-                        <span>CodeChallenger等你来战</span>
-                    </p>
+                        <div>CodeChallenger等你来战</div>
+                    </div>
                 </a-col>
-                <a-col :span="8" class="head-right">
+                <a-col :span="6" class="head-right">
                     <img src="../../assets/challger.png" alt="" />
                 </a-col>
             </a-row>
             <a-row class="content" justify="space-between">
-                <a-col :span="18" class="content-left">
+                <a-col :span="17" class="content-left">
                     <a-row>
                         <a-col>
-                            <fold-list />
+                            <fold-list :isQuestion="true" :categoryList="categoryList" />
                         </a-col>
-                        <a-col style="display: flex; gap: 10px; margin-top: 10px">
-                            <a-select v-model="query.source" placeholder="来源" style="width: 100px">
+                    </a-row>
+                    <a-row>
+                        <a-col style="display: flex; gap: 10px; margin: 10px 0">
+                            <a-select v-model="query.source" placeholder="来源" style="width: 130px">
                                 <a-option v-for="item in sourceList" :key="item.value" :label="item.label" :value="item.value" />
                             </a-select>
                             <a-select v-model="query.level" placeholder="难度" style="width: 100px">
@@ -261,19 +182,6 @@ const pagination = reactive({
                             </a-input>
                         </a-col>
                         <a-col style="display: flex; flex-direction: column; align-items: center">
-                            <!--                        <a-table class="table" :data="tableData" :stripe="true" style="width: 100%">
-								<a-table-column prop="status" label="状态" />
-								<a-table-column prop="name" label="题目" width="180" align="left">
-									<template #default="{ row }">
-										<a-link :underline="false" :href="'/challenge?id=' + row.name">{{ row.name }} </a-link>
-									</template>
-								</a-table-column>
-								<a-table-column prop="anwser" label="题解" />
-								<a-table-column prop="passRate" label="通过率" />
-								<a-table-column prop="level" label="难度" />
-								<a-table-column prop="num" label="人数" />
-							</a-table>
-							<a-pagination background layout="prev, pager, next" :total="50" />-->
                             <a-table class="table" :columns="columns" :data="data" :pagination="pagination" style="width: 100%" :bordered="false">
                                 <template #index="{ rowIndex }">
                                     {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
@@ -282,7 +190,7 @@ const pagination = reactive({
                         </a-col>
                     </a-row>
                 </a-col>
-                <a-col :span="6" style="position: sticky; top: 20px">
+                <a-col :span="6" :offset="1" style="position: sticky; top: 20px">
                     <div class="analyst">
                         <img src="../../assets/analyst.png" />
                         <div>
@@ -328,30 +236,30 @@ const pagination = reactive({
     overflow: hidden;
 }
 
-.back-ground-container::before {
-    transition: opacity 0.3s ease-out 0s;
-}
+//.back-ground-container::before {
+//    transition: opacity 0.3s ease-out 0s;
+//}
 
-.back-ground-container::before {
-    content: '';
-    height: 800px;
-    position: absolute;
-    // inset: 0px;
-    // background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1)), var(--background-url);
-    // background-position: 50% 17%;
-    // opacity: 0.2;
-    // background-size: cover;
-    // filter: blur(20px);
-    // z-index: -1;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-image: linear-gradient(to bottom, rgba(0, 255, 255, 0.289), rgb(255, 255, 255));
-    opacity: 0.2;
-    filter: blur(20px);
-    z-index: -1;
-}
+//.back-ground-container::before {
+//    content: '';
+//    height: 800px;
+//    position: absolute;
+//    // inset: 0px;
+//    // background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1)), var(--background-url);
+//    // background-position: 50% 17%;
+//    // opacity: 0.2;
+//    // background-size: cover;
+//    // filter: blur(20px);
+//    // z-index: -1;
+//    top: 0;
+//    right: 0;
+//    bottom: 0;
+//    left: 0;
+//    background-image: linear-gradient(to bottom, rgba(0, 255, 255, 0.289), rgb(255, 255, 255));
+//    opacity: 0.2;
+//    filter: blur(20px);
+//    z-index: -1;
+//}
 
 .container {
     width: 1200px;
@@ -366,9 +274,11 @@ const pagination = reactive({
         color: #000000;
         letter-spacing: 4px;
         margin-right: 20px;
+        line-height: 50px;
     }
 
-    span {
+    div {
+        line-height: 50px;
         font-size: 16px;
         color: #000000;
     }
@@ -376,10 +286,10 @@ const pagination = reactive({
 
 .head-right {
     // width: 350px;
-    height: 150px;
+    height: 100px;
 
     img {
-        width: 100%;
+        //width: 100%;
         height: 100%;
     }
 }
@@ -479,6 +389,8 @@ const pagination = reactive({
     background-color: #fff;
     border-radius: 8px;
     position: relative;
+    // 阴影
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 
     img {
         position: absolute;
@@ -511,6 +423,10 @@ const pagination = reactive({
 .ranking {
     margin-top: 20px;
     padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    // 阴影
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 
     img {
         height: 18px;
