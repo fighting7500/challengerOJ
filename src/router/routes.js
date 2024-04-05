@@ -56,9 +56,19 @@ export const routes = [
                 component: () => import('@/views/admin/AdminIndex.vue')
             },
             {
-                path: 'question',
+                path: 'question-list',
                 name: '题目管理',
-                component: () => import('@/views/admin/question.vue')
+                component: () => import('@/views/admin/QuestionList.vue')
+            },
+            {
+                path: 'edit-question/:id',
+                name: '编辑题目',
+                component: () => import('@/views/admin/EditQuestion.vue')
+            },
+            {
+                path: 'add-question',
+                name: '新增题目',
+                component: () => import('@/views/admin/AddQuestion.vue')
             },
             {
                 path: 'user-list',

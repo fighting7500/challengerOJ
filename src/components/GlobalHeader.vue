@@ -56,6 +56,15 @@ if (getToken()) {
             isLogin.value = false
             return
         }
+        if (res.data.recordInfo) {
+            res.data.recordInfo.forEach((item) => {
+                Notification.success({
+                    title: `${item.description}`,
+                    content: `+${item.points}`
+                    // icon: `icon-jinbi`
+                })
+            })
+        }
         userInfo = res.data
         // 存储用户信息
         useUserStore().setUserInfo(res.data)

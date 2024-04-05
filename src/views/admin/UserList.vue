@@ -9,7 +9,7 @@
 import { ref } from 'vue'
 import { apiGetUserList, apiAddUser, apiDeleteUser, apiUpdateUser } from '@/api/admin.js'
 import { Message, Modal } from '@arco-design/web-vue'
-import { useTimeFormat } from '@/utils/composables.js'
+import { useTimeFormat, useWindowHeight } from '@/utils/composables.js'
 
 const query = ref({
     page: 1,
@@ -52,14 +52,43 @@ const userRules = {
     role: [{ required: true, message: '请选择角色', trigger: 'blur' }]
 }
 const columns = [
-    { title: '头像', dataIndex: 'avatar', fixed: 'left', slotName: 'avatar' },
-    { title: '用户ID', dataIndex: 'id' },
-    { title: '手机号', dataIndex: 'phone' },
-    { title: '邮箱', dataIndex: 'email' },
-    { title: '角色', dataIndex: 'role', slotName: 'role' },
-    { title: '创建时间', dataIndex: 'created_at', slotName: 'created_at' },
-    { title: '操作', slotName: 'action', fixed: 'right' }
+    { title: '头像', dataIndex: 'avatar', fixed: 'left', slotName: 'avatar', width: 80 },
+    { title: '用户ID', dataIndex: 'id', fixed: 'left', width: 100 },
+    { title: '用户名', dataIndex: 'username', width: 120 },
+    { title: '手机号', dataIndex: 'phone', width: 130, align: 'center' },
+    { title: '邮箱', dataIndex: 'email', width: 200, align: 'center' },
+    { title: '角色', dataIndex: 'role', slotName: 'role', width: 100, align: 'center' },
+    { title: '创建时间', dataIndex: 'created_at', slotName: 'created_at', width: 180, align: 'center' },
+    { title: '操作', slotName: 'action', fixed: 'right', width: 240, align: 'center' }
 ]
+const scroll = {
+    y: useWindowHeight(120)
+}
+const total = ref(0)
+const pagination = ref({
+    size: 'small',
+    current: query.value.page,
+    pageSize: query.value.pageSize,
+    total: total,
+    showTotal: true,
+    showPageSize: true,
+    pageSizeOptions: [10, 20, 50, 100],
+    showJumper: true
+})
+const pageSizeChange = (pageSize) => {
+    console.log(pageSize)
+    query.value.pageSize = pageSize
+    pagination.value.pageSize = pageSize
+    query.value.page = 1
+    pagination.value.current = 1
+    init()
+}
+const pageChange = (page) => {
+    console.log(page)
+    query.value.page = page
+    pagination.value.current = page
+    init()
+}
 const loading = ref(false)
 const userList = ref([])
 const init = async () => {
@@ -70,8 +99,10 @@ const init = async () => {
         Message.error(res.msg)
         return
     }
-    userList.value = res.data.list
+    userList.value = res.data.Rows
+    total.value = res.data.total
     userList.value.forEach((item) => {
+        item.key = item.id
         item.created_at = useTimeFormat(item.created_at)
     })
 }
@@ -244,7 +275,17 @@ const closePasswordModal = () => {
                 </a-space>
             </a-col>
         </a-row>
-        <a-table class="table" :data="userList" :columns="columns" :loading="loading">
+        <a-table
+            class="table"
+            :data="userList"
+            :columns="columns"
+            :loading="loading"
+            :scroll="scroll"
+            :pagination="pagination"
+            @page-change="pageChange"
+            @page-size-change="pageSizeChange"
+            page-position="bl"
+        >
             <template #avatar="{ record }">
                 <a-avatar :imageUrl="record.avatar" />
             </template>
@@ -260,6 +301,7 @@ const closePasswordModal = () => {
             </template>
         </a-table>
     </div>
+    <!--	新增用户的弹窗-->
     <a-modal :visible="visibleModal" :title="isEditor ? '编辑用户' : '新增用户'" @cancel="handleCancel" @ok="submit" :mask-closable="false">
         <a-form ref="addUserForm" :model="userForm" :rules="userRules" label-col="{ span: 4 }" wrapper-col="{ span: 10 }">
             <a-form-item field="id" label="用户ID" name="id" disabled v-if="isEditor">

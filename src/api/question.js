@@ -6,20 +6,44 @@
  * @Last Modified time : 2024/3/31
  **/
 import request from '@/utils/request'
-import { getToken } from '@/utils/auth.js'
+
 // 获取题目分类
-export function apiCategories() {
+export function apiCategories(params) {
     return request({
         url: '/question/categories',
-        method: 'get'
+        method: 'get',
+        params: {
+            admin: params.admin || 0
+        }
     })
 }
 
 // 获取题目列表
-export function apiProblems(params) {
+export function apiGetProblemList(params) {
+    console.log(params)
     return request({
-        url: '/question/problems',
+        url: '/question/GetProblemList',
         method: 'get',
-        params
+        params: {
+            Page: params.pageNum,
+            Limit: params.pageSize,
+            ProblemName: params.problemName,
+            CategoryId: params.categoryId,
+            Difficulty: params.difficulty,
+            ID: params.id || ''
+        }
     })
 }
+
+// 通过id获取题目详情
+export function apiGetProblemById(params) {
+    return request({
+        url: '/question/GetProblemById',
+        method: 'get',
+        params: {
+            id: params.id
+        }
+    })
+}
+
+// 获取来源列表

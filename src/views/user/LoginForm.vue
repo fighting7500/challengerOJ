@@ -103,6 +103,7 @@ const login = () => {
             }
             Message.success('登录成功')
             userStore.setUserInfo(res.data)
+            userStore.setIsLogin(true)
             if (res.data.recordInfo) {
                 res.data.recordInfo.forEach((item) => {
                     Notification.success({

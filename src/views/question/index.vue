@@ -1,9 +1,11 @@
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import FoldList from '@/components/FoldList.vue'
-import { apiCategories, apiProblems } from '@/api/question.js'
+import { apiCategories, apiGetProblemList } from '@/api/question.js'
 import { Message } from '@arco-design/web-vue'
+import { useUserStore } from '@/store/userStore.js'
 
+const userStore = useUserStore()
 const query = ref({
     source: '',
     level: '',
@@ -14,6 +16,7 @@ const query = ref({
 })
 let categoryList = ref([])
 let data = ref([])
+const isLogin = computed(() => userStore.isLogin)
 
 onMounted(async () => {
     await getCategoryList()
@@ -21,7 +24,7 @@ onMounted(async () => {
 })
 // 获取分类列表
 const getCategoryList = async () => {
-    const res = await apiCategories()
+    const res = await apiCategories({ admin: 0 })
     if (res.status !== 200) {
         Message.error(res.msg)
         return
@@ -30,13 +33,12 @@ const getCategoryList = async () => {
 }
 // 获取题目列表
 const getQuestionList = async () => {
-    const res = await apiProblems(query.value)
+    const res = await apiGetProblemList(query.value)
     if (res.status !== 200) {
         Message.error(res.msg)
         return
     }
     data.value = res.data.Rows
-    console.log('data', data)
 }
 const input4 = ref('')
 const sourceList = reactive([
@@ -169,7 +171,7 @@ const pagination = reactive({
                             <a-select v-model="query.level" placeholder="难度" style="width: 100px">
                                 <a-option v-for="item in levelList" :key="item.value" :label="item.label" :value="item.value" />
                             </a-select>
-                            <a-select v-model="query.status" placeholder="状态" style="width: 100px">
+                            <a-select v-model="query.status" placeholder="状态" style="width: 100px" :disabled="!isLogin">
                                 <a-option v-for="item in statusList" :key="item.value" :label="item.label" :value="item.value" />
                             </a-select>
                             <a-select v-model="query.tag" placeholder="标签" style="width: 100px">

@@ -28,10 +28,12 @@ const menuClick = (key) => {
                     <template #icon><icon-font type="icon-yonghuguanli" :size="16" /></template>
                     用户列表
                 </a-menu-item>
-                <a-menu-item key="/admin/question">
+                <a-sub-menu key="sub1">
                     <template #icon><icon-font type="icon-timu1" :size="16" /></template>
-                    题目管理
-                </a-menu-item>
+                    <template #title> 题目管理</template>
+                    <a-menu-item key="/admin/question-list">题目列表</a-menu-item>
+                    <a-menu-item key="/admin/add-question">新增题目</a-menu-item>
+                </a-sub-menu>
                 <a-menu-item key="/admin/answer">
                     <template #icon><icon-font type="icon-daanjiexi" :size="16" /></template>
                     题解管理
