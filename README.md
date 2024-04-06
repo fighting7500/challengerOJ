@@ -1,35 +1,70 @@
-# code_challenger
+# CodeChallenger 项目介绍
 
-This template should help get you started developing with Vue 3 in Vite.
+## 主要功能
 
-## Recommended IDE Setup
+### 题库功能
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- **分类题目**：题目按照不同的分类（如排序、二叉树等）进行分类管理。
+- **题目来源**：记录题目的来源，便于用户了解题目出处。
+- **难度标识**：标记题目的难度，包括简单、中等、困难。
+- **题目状态**：记录用户对题目的状态，包括已通过、未通过等。
+- **题目详情**：提供题目的名称、数量、题解、通过率、用户人数等信息。
 
-## Customize configuration
+### 在线编程功能
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+- **代码编辑器**：集成 Monaco Editor，提供代码编写和高亮功能。
+- **代码提交**：用户可以将代码提交进行评测。
+- **评测结果**：显示代码执行用时、内存消耗等评测结果。
+- **提交记录**：记录用户每次提交的状态和信息。
 
-## Project Setup
+### 社区功能
+
+- **评论功能**：用户可以对题目和文章进行评论。
+- **点赞功能**：用户可以对评论进行点赞。
+- **文章收藏**：用户可以收藏感兴趣的文章。
+
+### 管理后台功能
+
+- **用户管理**：管理用户的注册信息和权限。
+- **题库管理**：管理题目的添加、编辑和删除。
+- **评论管理**：管理评论的审核和删除。
+
+### OJ 系统功能
+
+- **在线评测**：使用 Docker 沙箱实现代码的运行隔离，保障代码执行安全性。
+- **测试用例**：提供多组测试用例，确保代码的正确性。
+- **实时反馈**：对代码的执行结果进行实时反馈，方便用户调试。
+
+### 技术架构
+
+- **前端**：Vue 3、Vite、Arco Design Vue、Monaco Editor、md-editor-v3。
+- **后端**：Node.js、Express、MySQL、Redis。
+- **运行环境**：使用 Docker 实现代码沙箱隔离。
+
+## 项目特色
+
+- 提供丰富的题库和多样的题目分类，满足不同用户的需求。
+- 使用 Docker 沙箱实现代码的运行隔离，保障用户代码的安全性。
+- 社区功能丰富，用户可以在平台上交流、分享和学习。
+- 提供实时反馈和多组测试用例，帮助用户快速调试和改进代码。
+
+## 前端
+### Project Setup
 
 ```sh
 pnpm install
 ```
 
-### Compile and Hot-Reload for Development
+#### Compile and Hot-Reload for Development
 
 ```sh
 pnpm serve
 ```
 
-### Compile and Minify for Production
+#### Compile and Minify for Production
 
 ```sh
 pnpm build
 ```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-pnpm lint
-```
+## 服务端
+[https://gitee.com/wan-jie7500/code_challenger_serve](https://gitee.com/wan-jie7500/code_challenger_serve)
