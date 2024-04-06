@@ -68,6 +68,7 @@ if (getToken()) {
         userInfo = res.data
         // 存储用户信息
         useUserStore().setUserInfo(res.data)
+        useUserStore().setIsLogin(true)
     })
 }
 </script>

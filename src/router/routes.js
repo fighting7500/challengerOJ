@@ -25,7 +25,7 @@ export const routes = [
         component: () => import('@/views/question/index.vue')
     },
     {
-        path: '/challenge',
+        path: '/challenge/:id',
         name: '挑战',
         component: () => import('@/views/challenge/index.vue')
     },

@@ -1,27 +1,24 @@
 <script setup>
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted, computed, watchEffect } from 'vue'
 import FoldList from '@/components/FoldList.vue'
-import { apiCategories, apiGetProblemList } from '@/api/question.js'
+import { apiCategories, apiGetProblemList, apiGetSources, apiGetStatistics, apiGetRankList } from '@/api/question.js'
 import { Message } from '@arco-design/web-vue'
 import { useUserStore } from '@/store/userStore.js'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const userStore = useUserStore()
+
 const query = ref({
     source: '',
     level: '',
     status: '',
-    tag: '',
-    PageSize: 10,
-    PageNum: 1
+    tag: ''
 })
 let categoryList = ref([])
 let data = ref([])
 const isLogin = computed(() => userStore.isLogin)
 
-onMounted(async () => {
-    await getCategoryList()
-    await getQuestionList()
-})
 // 获取分类列表
 const getCategoryList = async () => {
     const res = await apiCategories({ admin: 0 })
@@ -33,112 +30,110 @@ const getCategoryList = async () => {
 }
 // 获取题目列表
 const getQuestionList = async () => {
-    const res = await apiGetProblemList(query.value)
+    const res = await apiGetProblemList({
+        pageNum: pagination.value.current,
+        pageSize: pagination.value.pageSize,
+        problemName: input4.value,
+        categoryId: query.value.tag,
+        difficulty: query.value.level,
+        userID: userStore.userInfo?.id,
+        sourceId: query.value.source,
+        status: query.value.status
+    })
     if (res.status !== 200) {
         Message.error(res.msg)
         return
     }
     data.value = res.data.Rows
+    pagination.value.total = res.data.total
+}
+
+const search = (categoryId) => {
+    pagination.value.current = 1
+    query.value.tag = categoryId
+    getQuestionList()
 }
 const input4 = ref('')
-const sourceList = reactive([
-    { value: '1', label: 'LeetCode' },
-    { value: '2', label: '牛客网' },
-    { value: '3', label: '力扣' },
-    { value: '4', label: 'CodeChallger' }
-])
+const sourceList = ref([])
+const getSources = async () => {
+    const res = await apiGetSources()
+    if (res.status !== 200) {
+        Message.error(res.msg)
+        return
+    }
+    sourceList.value = res.data
+}
 const levelList = reactive([
-    { value: '1', label: '简单' },
-    { value: '2', label: '中等' },
-    { value: '3', label: '困难' }
+    { value: 'easy', label: '简单' },
+    { value: 'medium', label: '中等' },
+    { value: 'hard', label: '困难' }
 ])
 const statusList = reactive([
-    { value: '1', label: '未开始' },
-    { value: '2', label: '进行中' },
-    { value: '3', label: '已完成' }
-])
-const tagList = reactive([
-    { value: '1', label: '数组' },
-    { value: '2', label: '字符串' },
-    { value: '3', label: '链表' },
-    { value: '4', label: '栈' },
-    { value: '5', label: '队列' },
-    { value: '6', label: '树' },
-    { value: '7', label: '图' },
-    { value: '8', label: '排序' },
-    { value: '9', label: '查找' },
-    { value: '10', label: '动态规划' },
-    { value: '11', label: '贪心' },
-    { value: '12', label: '回溯' },
-    { value: '13', label: '分治' },
-    { value: '14', label: '位运算' },
-    { value: '15', label: '数学' },
-    { value: '16', label: '设计' },
-    { value: '17', label: '模拟' },
-    { value: '18', label: '递归' },
-    { value: '19', label: '并查集' },
-    { value: '20', label: '图论' },
-    { value: '21', label: '拓扑排序' },
-    { value: '22', label: '最短路径' },
-    { value: '23', label: '最小生成树' },
-    { value: '24', label: '动态规划' },
-    { value: '25', label: '贪心' },
-    { value: '26', label: '回溯' },
-    { value: '27', label: '分治' },
-    { value: '28', label: '位运算' },
-    { value: '29', label: '数学' },
-    { value: '30', label: '设计' },
-    { value: '31', label: '模拟' },
-    { value: '32', label: '递归' },
-    { value: '33', label: '并查集' },
-    { value: '34', label: '图论' },
-    { value: '35', label: '拓扑排序' },
-    { value: '36', label: '最短路径' },
-    { value: '37', label: '最小生成树' },
-    { value: '38', label: '动态规划' },
-    { value: '39', label: '贪心' },
-    { value: '40', label: '回溯' },
-    { value: '41', label: '分治' },
-    { value: '42', label: '位运算' },
-    { value: '43', label: '数学' },
-    { value: '44', label: '设计' },
-    { value: '45', label: '模拟' },
-    { value: '46', label: '递归' },
-    { value: '47', label: '并查集' },
-    { value: '48', label: '图论' },
-    { value: '49', label: '拓扑排序' },
-    { value: '50', label: '最短路径' },
-    { value: '51', label: '最小生成树' }
+    { value: '0', label: '未开始' },
+    { value: '1', label: '未通过' },
+    { value: '2', label: '已完成' }
 ])
 const columns = [
-    {
-        title: '状态',
-        dataIndex: 'status'
-    },
-    {
-        title: '题目',
-        dataIndex: 'name'
-    },
-    {
-        title: '题解',
-        dataIndex: 'solution'
-    },
-    {
-        title: '通过率',
-        dataIndex: 'pass_rate'
-    },
+    { title: '状态', dataIndex: 'status', key: 'status', width: '80', slotName: 'status', align: 'center' },
+    { title: '题目', dataIndex: 'name', key: 'name', slotName: 'name', width: '180' },
+    { title: '题解', dataIndex: 'solution', key: 'solution', width: '80', align: 'center' },
+    { title: '通过率', dataIndex: 'pass_rate', key: 'pass_rate', width: '80', align: 'center' },
     {
         title: '难度',
-        dataIndex: 'difficulty'
+        dataIndex: 'difficulty',
+        key: 'difficulty',
+        width: '100',
+        slotName: 'difficulty',
+        align: 'center'
     },
-    {
-        title: '人数',
-        dataIndex: 'user_count'
-    }
+    { title: '人数', dataIndex: 'user_count', key: 'user_count', width: '80', align: 'center' }
 ]
-const pagination = reactive({
+const pagination = ref({
+    pageSize: 10,
     current: 1,
-    pageSize: 20
+    total: 0,
+    showTotal: true,
+    showPageSize: true,
+    pageSizeOptions: [10, 20, 50, 100],
+    showJumper: true
+})
+const userStatistics = ref({
+    passRate: 0,
+    problemCount: 0,
+    totalTime: 0
+})
+const getStatistics = async () => {
+    const res = await apiGetStatistics({ userId: userStore.userInfo.id })
+    if (res.status !== 200) {
+        Message.error(res.msg)
+        return
+    }
+    userStatistics.value = res.data
+}
+const rankList = ref([])
+const getRankList = async () => {
+    const res = await apiGetRankList()
+    if (res.status !== 200) {
+        Message.error(res.msg)
+        return
+    }
+    rankList.value = res.data
+}
+
+const toDetail = (id) => {
+    router.push({ name: '挑战', params: { id } })
+}
+
+watchEffect(() => {
+    if (isLogin.value) {
+        getStatistics()
+    }
+})
+onMounted(() => {
+    getCategoryList()
+    getQuestionList()
+    getSources()
+    getRankList()
 })
 </script>
 
@@ -160,24 +155,25 @@ const pagination = reactive({
                 <a-col :span="17" class="content-left">
                     <a-row>
                         <a-col>
-                            <fold-list :isQuestion="true" :categoryList="categoryList" />
+                            <fold-list :isQuestion="true" :categoryList="categoryList" @searchComponent="(categoryId) => search(categoryId)" />
                         </a-col>
                     </a-row>
                     <a-row>
                         <a-col style="display: flex; gap: 10px; margin: 10px 0">
-                            <a-select v-model="query.source" placeholder="来源" style="width: 130px">
-                                <a-option v-for="item in sourceList" :key="item.value" :label="item.label" :value="item.value" />
+                            <a-select v-model="query.source" placeholder="来源" style="width: 130px" @change="() => search()" allow-clear>
+                                <a-option v-for="item in sourceList" :key="item.id" :label="item.name" :value="item.id" />
                             </a-select>
-                            <a-select v-model="query.level" placeholder="难度" style="width: 100px">
+                            <a-select v-model="query.level" placeholder="难度" style="width: 100px" @change="() => search()" allow-clear>
                                 <a-option v-for="item in levelList" :key="item.value" :label="item.label" :value="item.value" />
                             </a-select>
-                            <a-select v-model="query.status" placeholder="状态" style="width: 100px" :disabled="!isLogin">
-                                <a-option v-for="item in statusList" :key="item.value" :label="item.label" :value="item.value" />
+                            <a-select v-model="query.status" placeholder="状态" style="width: 100px" :disabled="!isLogin" @change="() => search()" allow-clear>
+                                <!--                                <template #option>12</template>-->
+                                <a-option v-for="item in statusList" :key="item.value" :label="item.label" :value="item.value"></a-option>
                             </a-select>
-                            <a-select v-model="query.tag" placeholder="标签" style="width: 100px">
-                                <a-option v-for="item in tagList" :key="item.value" :label="item.label" :value="item.value" />
-                            </a-select>
-                            <a-input v-model="input4" style="width: 160px" placeholder="搜索题目、编号" size="small">
+                            <!--<a-select v-model="query.tag" placeholder="标签" style="width: 100px" @change="() => search()" allow-clear>-->
+                            <!--<a-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.id" />-->
+                            <!--</a-select>-->
+                            <a-input v-model="input4" style="width: 160px" placeholder="搜索题目" size="small">
                                 <template #prefix>
                                     <i class="iconfont icon-sousuo"></i>
                                 </template>
@@ -185,8 +181,13 @@ const pagination = reactive({
                         </a-col>
                         <a-col style="display: flex; flex-direction: column; align-items: center">
                             <a-table class="table" :columns="columns" :data="data" :pagination="pagination" style="width: 100%" :bordered="false">
-                                <template #index="{ rowIndex }">
-                                    {{ rowIndex + 1 + (pagination.current - 1) * pagination.pageSize }}
+                                <template #name="{ record }">
+                                    <a href="#" @click="toDetail(record.id)">{{ record.name }}</a>
+                                </template>
+                                <template #difficulty="{ record }">
+                                    <a-tag :color="record.difficulty === 'easy' ? 'green' : record.difficulty === 'medium' ? 'orange' : 'red'">
+                                        {{ record.difficulty === 'easy' ? '简单' : record.difficulty === 'medium' ? '中等' : '困难' }}
+                                    </a-tag>
                                 </template>
                             </a-table>
                         </a-col>
@@ -200,15 +201,15 @@ const pagination = reactive({
                         </div>
                         <div class="analyst-flex">
                             <div class="statistics">
-                                <div class="num">0</div>
+                                <div class="num">{{ userStatistics.passRate || 0 }}</div>
                                 <div class="span">通过率(%)</div>
                             </div>
                             <div class="statistics">
-                                <div class="num">0</div>
+                                <div class="num">{{ userStatistics.problemCount || 0 }}</div>
                                 <div class="span">刷题数</div>
                             </div>
                             <div class="statistics">
-                                <div class="num">0</div>
+                                <div class="num">{{ userStatistics.totalTime || 0 }}</div>
                                 <div class="span">累计时长(h)</div>
                             </div>
                         </div>
@@ -216,12 +217,12 @@ const pagination = reactive({
                     <div class="ranking">
                         <img src="../../assets/ranking.png" alt="" />
                         <div class="ranking-item" v-for="(item, index) in 10" :key="index">
-                            <span class="index">1</span>
-                            <span class="name">
-                                <img src="" alt="" />
-                                <span>小明</span>
+                            <span class="index">{{ index + 1 }}</span>
+                            <span class="name" v-if="rankList[index]">
+                                <img :src="rankList[index].avatar" alt="" />
+                                <span>{{ rankList[index].username }}</span>
                             </span>
-                            <span class="num">100题</span>
+                            <span class="num" v-if="rankList[index]">{{ rankList[index].count }}题</span>
                         </div>
                     </div>
                 </a-col>
@@ -262,11 +263,14 @@ const pagination = reactive({
 //    filter: blur(20px);
 //    z-index: -1;
 //}
-
+a {
+    color: #3574f0;
+    text-decoration: none;
+}
 .container {
     width: 1200px;
     padding: 32px 90px;
-    margin: 0px auto;
+    margin: 0 auto;
 }
 
 .head-left {
@@ -333,9 +337,9 @@ const pagination = reactive({
             0 0 #0000,
             0 0 #0000,
             0 0 #0000,
-            0px 2px 6px #0000000a,
-            0px 4px 8px #00000005,
-            0px 6px 12px #00000005;
+            0 2px 6px #0000000a,
+            0 4px 8px #00000005,
+            0 6px 12px #00000005;
         box-sizing: border-box;
         transition: all 0.3s;
 

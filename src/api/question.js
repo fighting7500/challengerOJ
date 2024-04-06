@@ -20,7 +20,6 @@ export function apiCategories(params) {
 
 // 获取题目列表
 export function apiGetProblemList(params) {
-    console.log(params)
     return request({
         url: '/question/GetProblemList',
         method: 'get',
@@ -30,7 +29,10 @@ export function apiGetProblemList(params) {
             ProblemName: params.problemName,
             CategoryId: params.categoryId,
             Difficulty: params.difficulty,
-            ID: params.id || ''
+            SourceId: params.sourceId || '',
+            ID: params.id || '',
+            UserID: params.userID || '',
+            Status: params.status || ''
         }
     })
 }
@@ -51,5 +53,35 @@ export function apiGetSources() {
     return request({
         url: '/question/GetSources',
         method: 'get'
+    })
+}
+
+// 获取统计数据
+export function apiGetStatistics(params) {
+    return request({
+        url: '/question/GetStatistics',
+        method: 'get',
+        params: {
+            UserID: params.userId
+        }
+    })
+}
+
+// 获取排行榜
+export function apiGetRankList() {
+    return request({
+        url: '/question/GetRankList',
+        method: 'get'
+    })
+}
+
+// 获取题目详情
+export function apiGetProblemDetail(id) {
+    return request({
+        url: '/question/GetProblemDetail',
+        method: 'get',
+        params: {
+            ID: id
+        }
     })
 }

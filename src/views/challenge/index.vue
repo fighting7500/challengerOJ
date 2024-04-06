@@ -1,6 +1,11 @@
 <script setup>
 import Header from './components/header.vue'
 import Content from './components/content.vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+
+const id = route.params.id
 </script>
 
 <template>
@@ -9,7 +14,7 @@ import Content from './components/content.vue'
             <Header />
         </a-layout-header>
         <a-layout-content class="content">
-            <Content />
+            <Content :problemId="id" />
         </a-layout-content>
     </a-layout>
 </template>

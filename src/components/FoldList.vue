@@ -19,13 +19,21 @@ defineProps({
         default: () => []
     }
 })
+
+// const emit = defineEmits(['search-component'])
 </script>
 
 <template>
     <div class="tags">
         <div class="reactive" :style="{ flexWrap: isWrap ? 'wrap' : 'nowrap' }">
-            <div class="tag" v-for="item in categoryList" :key="item.id" @click="() => getDetail(item)">
-                <a href="">
+            <div class="tag" @click="$emit('search-component')">
+                <a href="#">
+                    <span>全部</span>
+                    <span>{{ categoryList.length }}</span>
+                </a>
+            </div>
+            <div class="tag" v-for="item in categoryList" :key="item.id" @click="$emit('search-component', item.id)">
+                <a href="#">
                     <span>{{ item.name }}</span>
                     <span>{{ item.count }}</span>
                 </a>

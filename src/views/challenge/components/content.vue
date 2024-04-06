@@ -6,12 +6,13 @@
  * @Last Modified time : 2024/3/28
 -->
 <script setup>
-import { ref } from 'vue'
-import md from './README.md?raw'
+import { ref, onMounted } from 'vue'
 import QuestionAnswer from './QuestionAnswer.vue'
 import SubmitRecord from './SubmitRecord.vue'
 import CodeEditor from '@/components/codeEditor.vue'
 import TestResult from '@/views/challenge/components/TestResult.vue'
+import { apiGetProblemDetail } from '@/api/question.js'
+import { Message } from '@arco-design/web-vue'
 
 const language = ref('javascript')
 const languageList = [
@@ -21,7 +22,20 @@ const languageList = [
     { value: 'c', label: 'C' },
     { value: 'c++', label: 'C++' }
 ]
-const text = ref(md)
+const text = ref('')
+const prop = defineProps(['problemId'])
+const getProblemDetail = async () => {
+    const res = await apiGetProblemDetail(prop.problemId)
+    if (res.status !== 200) {
+        Message.error(res.msg)
+        return
+    }
+    text.value = '# ' + res.data.problem.name + '\n' + res.data.problem_details.content
+}
+
+onMounted(() => {
+    getProblemDetail()
+})
 </script>
 
 <template>
@@ -67,7 +81,7 @@ const text = ref(md)
                                     </a-select>
                                     <icon-refresh size="20" />
                                 </div>
-                                <code-editor style="flex: 1" />
+                                <!--                                <code-editor style="flex: 1" />-->
                                 <div class="right-top-footer">
                                     <a-button type="text">运行</a-button>
                                     <a-button type="primary" class="submit">提交</a-button>
@@ -86,7 +100,7 @@ const text = ref(md)
                                 <a-tab-pane key="1" title="测试用例">
                                     <template #title> <i class="iconfont icon-ceshi"></i> 测试用例 </template>
                                     <div class="test-record">
-                                        <code-editor style="height: 100%" />
+                                        <!--                                        <code-editor style="height: 100%" />-->
                                     </div>
                                 </a-tab-pane>
                                 <a-tab-pane key="2" title="测试结果">

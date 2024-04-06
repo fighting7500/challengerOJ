@@ -6,7 +6,6 @@
  * @Last Modified time : 2024/4/4
  **/
 import request from '@/utils/request'
-import qs from 'qs'
 
 // 查询用户列表
 export function apiGetUserList(params) {
