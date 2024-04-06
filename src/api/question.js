@@ -47,3 +47,9 @@ export function apiGetProblemById(params) {
 }
 
 // 获取来源列表
+export function apiGetSources() {
+    return request({
+        url: '/question/GetSources',
+        method: 'get'
+    })
+}

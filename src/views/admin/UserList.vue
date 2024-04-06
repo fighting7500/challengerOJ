@@ -290,7 +290,7 @@ const closePasswordModal = () => {
                 <a-avatar :imageUrl="record.avatar" />
             </template>
             <template #role="{ record }">
-                <span>{{ record.role === '0' ? '管理员' : '普通用户' }}</span>
+                <a-tag :color="record.role === '0' ? '#ffb400' : '#86909c'">{{ record.role === '0' ? '管理员' : '普通用户' }} </a-tag>
             </template>
             <template #action="{ record }">
                 <a-space>

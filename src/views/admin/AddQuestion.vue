@@ -11,7 +11,7 @@ import { useWindowHeight } from '@/utils/composables.js'
 import { MdEditor } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
 import { apiAddProblem } from '@/api/admin.js'
-import { apiCategories } from '@/api/question.js'
+import { apiCategories, apiGetSources } from '@/api/question.js'
 import { Message } from '@arco-design/web-vue'
 import { useRouter } from 'vue-router'
 
@@ -22,6 +22,7 @@ const height = useWindowHeight(50)
 const setCurrent = (index) => {
     current.value = index
 }
+const informationForm = ref(null)
 const form = ref({
     name: '',
     difficulty: '',
@@ -30,6 +31,12 @@ const form = ref({
     author: '',
     content: ''
 })
+const formRules = {
+    name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+    difficulty: [{ required: true, message: '请选择难度', trigger: 'change' }],
+    category: [{ required: true, message: '请选择分类', trigger: 'change' }],
+    source: [{ required: true, message: '请选择来源', trigger: 'change' }]
+}
 const categoryList = ref([])
 const init = async () => {
     const res = await apiCategories({ admin: 1 })
@@ -39,13 +46,20 @@ const init = async () => {
     }
     categoryList.value = res.data
 }
-onMounted(() => {
-    init()
-})
 const sourceList = ref([])
+const initSource = async () => {
+    const res = await apiGetSources()
+    if (res.status !== 200) {
+        Message.error(res.msg)
+        return
+    }
+    sourceList.value = res.data
+}
+
 const changeCurrent = (step) => {
     current.value += step
 }
+
 const sampleRows = ref([
     [
         {
@@ -126,41 +140,62 @@ const deleteTest = (rowIndex, colIndex) => {
     })
 }
 
-const submit = async () => {
-    // 将示例输入输出和测试用例输入输出分别存储到sampleInputs、sampleOutputs、testInputs、testOutputs中
-    const sampleInputs = []
-    const sampleOutputs = []
-    const sampleRemarks = []
-    sampleRows.value.forEach((row) => {
-        row.forEach((item) => {
-            sampleInputs.push(item.sampleInput)
-            sampleOutputs.push(item.sampleOutput)
-            sampleRemarks.push(item.remark)
-        })
-    })
-    const testInputs = []
-    const testExpectedOutputs = []
-    testList.value.forEach((row) => {
-        row.forEach((item) => {
-            testInputs.push(item.input)
-            testExpectedOutputs.push(item.expectedOutput)
-        })
-    })
-    let data = {
-        sampleInputs: JSON.stringify(sampleInputs),
-        sampleOutputs: JSON.stringify(sampleOutputs),
-        sampleRemarks: JSON.stringify(sampleRemarks),
-        testInputs: JSON.stringify(testInputs),
-        testExpectedOutputs: JSON.stringify(testExpectedOutputs)
-    }
-    const res = await apiAddProblem(JSON.stringify(form.value), data)
-    if (res.status !== 200) {
-        Message.error(res.msg)
+const submit = () => {
+    if (form.value.content === '') {
+        Message.error('题目内容不能为空')
+        current.value = 2
         return
     }
-    Message.success('添加成功')
-    router.push('/admin/question-list')
+    informationForm.value.validate(async (valid) => {
+        if (valid) {
+            current.value = 1
+            return
+        }
+        // 将示例输入输出和测试用例输入输出分别存储到sampleInputs、sampleOutputs、testInputs、testOutputs中
+        const sampleInputs = []
+        const sampleOutputs = []
+        const sampleRemarks = []
+        sampleRows.value.forEach((row) => {
+            row.forEach((item) => {
+                sampleInputs.push(item.sampleInput)
+                sampleOutputs.push(item.sampleOutput)
+                sampleRemarks.push(item.remark)
+            })
+        })
+        const testInputs = []
+        const testExpectedOutputs = []
+        testList.value.forEach((row) => {
+            row.forEach((item) => {
+                testInputs.push(item.input)
+                testExpectedOutputs.push(item.expectedOutput)
+            })
+        })
+        // 示例输入输出和测试用例不能为空
+        if (sampleInputs.some((item) => item === '') || sampleOutputs.some((item) => item === '') || testInputs.some((item) => item === '') || testExpectedOutputs.some((item) => item === '')) {
+            Message.error('示例输入输出和测试用例输入输出不能为空')
+            return
+        }
+        let data = {
+            sampleInputs: JSON.stringify(sampleInputs),
+            sampleOutputs: JSON.stringify(sampleOutputs),
+            sampleRemarks: JSON.stringify(sampleRemarks),
+            testInputs: JSON.stringify(testInputs),
+            testExpectedOutputs: JSON.stringify(testExpectedOutputs)
+        }
+        const res = await apiAddProblem(JSON.stringify(form.value), data)
+        if (res.status !== 200) {
+            Message.error(res.msg)
+            return
+        }
+        Message.success('添加成功')
+        router.push('/admin/question-list')
+    })
 }
+
+onMounted(() => {
+    init()
+    initSource()
+})
 </script>
 
 <template>
@@ -170,29 +205,29 @@ const submit = async () => {
         <a-step>测试用例</a-step>
     </a-steps>
     <div :style="{ height: height + 'px' }">
-        <div class="step1" v-if="current === 1">
-            <a-form class="form" :model="form" :label-col-props="{ span: 4 }" :wrapper-col-props="{ span: 14 }">
-                <a-form-item field="name" label="名称">
+        <div class="step1" v-show="current === 1">
+            <a-form class="form" ref="informationForm" :model="form" :rules="formRules" :label-col-props="{ span: 4 }" :wrapper-col-props="{ span: 14 }">
+                <a-form-item field="name" label="名称" validate-trigger="blur">
                     <a-input v-model="form.name" />
                 </a-form-item>
-                <a-form-item field="difficulty" label="难度">
+                <a-form-item field="difficulty" label="难度" validate-trigger="blur">
                     <a-select v-model="form.difficulty">
                         <a-option value="easy">简单</a-option>
                         <a-option value="medium">中等</a-option>
                         <a-option value="hard">困难</a-option>
                     </a-select>
                 </a-form-item>
-                <a-form-item field="category" label="分类">
-                    <a-select v-model="form.category">
+                <a-form-item field="category" label="分类" validate-trigger="blur">
+                    <a-select v-model="form.category" allow-clear allow-search>
                         <a-option v-for="item in categoryList" :key="item.id" :value="item.id">{{ item.name }} </a-option>
                     </a-select>
                 </a-form-item>
-                <a-form-item field="source" label="来源">
-                    <a-select v-model="form.source" allow-clear allow-create>
+                <a-form-item field="source" label="来源" validate-trigger="blur">
+                    <a-select v-model="form.source" allow-clear allow-create allow-search>
                         <a-option v-for="item in sourceList" :key="item.id" :value="item.id">{{ item.name }}</a-option>
                     </a-select>
                 </a-form-item>
-                <a-form-item label="作者">
+                <a-form-item field="author" label="作者">
                     <a-input v-model="form.author" />
                 </a-form-item>
                 <a-form-item>
@@ -200,14 +235,14 @@ const submit = async () => {
                 </a-form-item>
             </a-form>
         </div>
-        <div class="step2" v-else-if="current === 2">
+        <div class="step2" v-show="current === 2">
             <MdEditor v-model="form.content" />
             <a-space class="btns">
                 <a-button type="primary" @click="changeCurrent(-1)">上一步</a-button>
                 <a-button type="primary" @click="changeCurrent(1)">下一步</a-button>
             </a-space>
         </div>
-        <div v-else>
+        <div v-show="current === 3">
             <a-space direction="vertical" size="medium" fill>
                 <a-row v-for="(row, rowIndex) in sampleRows" :key="rowIndex" :gutter="24">
                     <a-col class="a-row" v-for="(item, colIndex) in row" :key="colIndex" :span="8">

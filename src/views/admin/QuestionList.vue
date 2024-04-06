@@ -6,9 +6,9 @@
  * @Last Modified time : 2024/4/4
 -->
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { apiGetProblemList, apiCategories } from '@/api/question.js'
+import { apiGetProblemList, apiCategories, apiGetSources } from '@/api/question.js'
 import { apiUpdateProblemStatus, apiDeleteProblem } from '@/api/admin.js'
 import { Message, Modal } from '@arco-design/web-vue'
 import { useTimeFormat, useWindowHeight } from '@/utils/composables.js'
@@ -22,6 +22,7 @@ const query = reactive({
 })
 const problemList = ref([])
 const categoryList = ref([])
+const sourceList = ref([])
 const loading = ref(false)
 const scroll = {
     y: useWindowHeight(120)
@@ -38,7 +39,7 @@ const pagination = {
 const columns = [
     { title: '题目ID', dataIndex: 'id', key: 'id', width: 100, align: 'center', fixed: 'left' },
     { title: '题目名称', dataIndex: 'name', key: 'name', width: 150, fixed: 'left' },
-    { title: '来源', dataIndex: 'source_id', key: 'source_id', width: 150, align: 'center' },
+    { title: '来源', dataIndex: 'source_id', key: 'source_id', slotName: 'source_id', width: 150, align: 'center' },
     { title: '作者', dataIndex: 'author', key: 'author', width: 150, align: 'center' },
     {
         title: '分类',
@@ -63,7 +64,15 @@ const getCategories = async () => {
     }
     categoryList.value = res.data
 }
-getCategories()
+const getSources = async () => {
+    const res = await apiGetSources()
+    if (res.status !== 200) {
+        Message.error(res.msg)
+        return
+    }
+    sourceList.value = res.data
+}
+
 const search = () => {
     getProblemList()
 }
@@ -74,10 +83,6 @@ const reset = () => {
     query.categoryId = ''
     query.difficulty = ''
     getProblemList()
-}
-
-const openModal = () => {
-    router.push('/admin/editor')
 }
 
 const getProblemList = async () => {
@@ -159,8 +164,11 @@ const deleteQuestion = (record) => {
         }
     })
 }
-
-getProblemList()
+onMounted(() => {
+    getCategories()
+    getSources()
+    getProblemList()
+})
 </script>
 
 <template>
@@ -204,7 +212,7 @@ getProblemList()
                         </template>
                         重置
                     </a-button>
-                    <a-button type="primary" status="success" @click="openModal">
+                    <a-button type="primary" status="success" @click="() => router.push('/admin/add-question')">
                         <template #icon>
                             <icon-plus />
                         </template>
@@ -226,6 +234,14 @@ getProblemList()
         >
             <template #category_id="{ record }">
                 {{ categoryList.find((item) => item.id === record.category_id)?.name }}
+            </template>
+            <template #difficulty="{ record }">
+                <a-tag v-if="record.difficulty === 'eazy'" color="#7bc616">简单</a-tag>
+                <a-tag v-else-if="record.difficulty === 'medium'" color="#ff7d00">中等</a-tag>
+                <a-tag v-else color="#f53f3f">困难</a-tag>
+            </template>
+            <template #source_id="{ record }">
+                {{ sourceList.find((item) => item.id === record.source_id)?.name }}
             </template>
             <template #action="{ record }">
                 <a-space>
