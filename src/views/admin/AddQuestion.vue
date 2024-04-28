@@ -29,7 +29,9 @@ const form = ref({
     category: '',
     source: '',
     author: '',
-    content: ''
+    content: '',
+    cpuTime: '',
+    memory: ''
 })
 const formRules = {
     name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
@@ -216,6 +218,13 @@ onMounted(() => {
                         <a-option value="medium">中等</a-option>
                         <a-option value="hard">困难</a-option>
                     </a-select>
+                </a-form-item>
+                <!--cpu用时和消耗内存-->
+                <a-form-item field="cpuTime" label="cpu用时(ms)" validate-trigger="blur">
+                    <a-input v-model="form.cpuTime" />
+                </a-form-item>
+                <a-form-item field="memory" label="消耗内存(MB)" validate-trigger="blur">
+                    <a-input v-model="form.memory" />
                 </a-form-item>
                 <a-form-item field="category" label="分类" validate-trigger="blur">
                     <a-select v-model="form.category" allow-clear allow-search>
