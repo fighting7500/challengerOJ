@@ -27,7 +27,7 @@ import router from './router'
 import ArcoVueIcon from '@arco-design/web-vue/es/icon'
 import { Icon } from '@arco-design/web-vue'
 
-const IconFont = Icon.addFromIconFontCn({ src: 'https://at.alicdn.com/t/c/font_4225649_2417kjcext9.js' })
+const IconFont = Icon.addFromIconFontCn({ src: 'https://at.alicdn.com/t/c/font_4225649_e7npk29c3p9.js' })
 
 const app = createApp(App)
 const pinia = createPinia()
